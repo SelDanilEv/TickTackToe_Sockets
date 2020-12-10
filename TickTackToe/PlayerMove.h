@@ -1,11 +1,12 @@
 #pragma once
 class PlayerMove
 {
+public:
     PlayerMove() : playerType(EMPTY)
     {}
 
-    PlayerMove(CellState cs,int row,int col)
-        : playerType(cs),row(row),col(col)
+    PlayerMove(CellState cs)
+        : playerType(cs)
     {}
 
 public:

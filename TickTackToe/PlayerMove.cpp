@@ -3,13 +3,13 @@
 void PlayerMove::Write(OutputMemoryStream& inStream) const
 {
 	inStream.Write(playerType);
-	inStream.Write(row);
 	inStream.Write(col);
+	inStream.Write(row);
 }
 
 void PlayerMove::Read(InputMemoryStream& inStream)
 {
 	inStream.Read(playerType);
-	inStream.Read(row);
 	inStream.Read(col);
+	inStream.Read(row);
 }

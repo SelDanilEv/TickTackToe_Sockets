@@ -61,7 +61,7 @@ void TCPServer::DoTCPLoop()
 }
 
 
-int PlayerCounter = 1;
+int32_t PlayerCounter = 0;
 void TCPServer::ProcessNewClient(TCPSocketPtr socket, SocketAddress address)
 {
     OutputMemoryStream stream;
@@ -69,19 +69,19 @@ void TCPServer::ProcessNewClient(TCPSocketPtr socket, SocketAddress address)
     const char* buffer = stream.GetBufferPtr();
     uint32_t sz = stream.GetLength();
 
-    socket->Send(&buffer, stream.GetLength());
+    socket->Send(buffer, stream.GetLength());
     std::cout << "New client" << std::endl;
 }
 
 void TCPServer::ProcessDataFromClient(TCPSocketPtr socket, char* data, int dataLen)
 {
-    GameBoard* board = new GameBoard();
+    PlayerMove* pM = new PlayerMove();
 
     //TestClass* test = new TestClass();
 
     InputMemoryStream inputMS(data, dataLen);
 
-    board->Read(inputMS);
+    pM->Read(inputMS);
     ////ReceiveTestClass(socket, test);
 
     ////string tmp = std::to_string((int)socket->mSocket);

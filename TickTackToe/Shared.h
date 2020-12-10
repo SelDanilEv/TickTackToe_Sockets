@@ -91,7 +91,7 @@ using std::unordered_map;
 #include "InputMemoryBitStream.h"
 #include "TestClass.h"
 
-#include "CellModel.h"
 #include "CellState.h"
+#include "CellModel.h"
 #include "GameBoard.h"
 #include "PlayerMove.h"
