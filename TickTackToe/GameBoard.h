@@ -4,6 +4,8 @@ class GameBoard
 public:
     const static unsigned int SIZE = 3;
     CellState turn;
+    string message;
+    bool isGameOver = false;
 
     GameBoard()
     {
@@ -19,5 +21,18 @@ public:
 public:
     void Write(OutputMemoryStream& inStream) const;
     void Read(InputMemoryStream& inStream);
+    void ChangeTurn();
+
+    char GetCharFromCell(int cell) {
+        switch (cell)
+        {
+        case 0:
+            return 'X';
+        case 1:
+            return 'O';
+        default:
+            return '-';
+        }
+    }
 };
 

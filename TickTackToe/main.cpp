@@ -1,9 +1,86 @@
 #include "Shared.h"
 
-int main()
+
+#pragma region Player
+CellState playerType;
+#pragma endregion
+GameBoard* GB = new GameBoard();
+
+
+DWORD WINAPI TakeBoard()
 {
+    UDPSocketPtr serverSocket = SocketUtil::CreateUDPSocket(SocketAddressFamily::INET);
+
+    //SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString("127.0.0.1:2000");
+
+    SocketAddress* inAddress = new SocketAddress((int)2000);
+
+    //while (serverSocket->Bind(*inAddress) != 0) {
+    //    std::cout << "Try bind";
+    //    Sleep(100);
+    //}
+
+    //serverSocket->SetNonBlockingMode(true);
+
+    serverSocket->Bind(*inAddress);
+    std::cout << "Start";
+
+    while (true)
+    {
+        char segment[5000];
+        int dataReceived = serverSocket->ReceiveFrom(segment, 5000, *inAddress);
+        if (dataReceived <= 0)
+        {
+            //std::cout << "continue" << std::endl;
+            Sleep(100);
+            continue;
+        }
+
+        std::cout << "after continue" << std::endl;
+
+        InputMemoryStream inputMS(segment, dataReceived);
+
+        GB->Read(inputMS);
+
+        system("cls");
+
+        std::string output = "You play as ";
+        output += GB->GetCharFromCell(playerType);
+        output += "\n   A  B  C\n";
+        for (int i = 0; i < GB->SIZE; i++) {
+            output += std::to_string(i + 1);
+            output += "  ";
+            for (int j = 0; j < GB->SIZE; j++) {
+                output += GB->GetCharFromCell(GB->cells[i][j]->state);
+                output += "  ";
+            }
+            output += '\n';
+        }
+        output += "\n\t Current turn => ";
+        output += GB->GetCharFromCell(GB->turn);
+        output += "\n\n";
+        output += GB->message;
+        output += '\n';
+        std::cout << output;
+    }
+
+    std::cout << "Finish take" << std::endl;
+    return 0;
+}
+
+
+void makeClient() {
     SocketUtil::StaticInit();
-    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString("127.0.0.1:2000");
+
+#pragma region TakeBoard
+    DWORD th1 = NULL;
+
+    HANDLE hTh1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)TakeBoard, NULL, 0, &th1);
+
+    ResumeThread(hTh1);
+#pragma endregion
+
+    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString("127.0.0.1:2000");  //set here server address
 
     SocketAddress* inAddress = new SocketAddress(servAddr->mSockAddr);
 
@@ -11,13 +88,11 @@ int main()
 
     clientSocket->Connect(*inAddress);
 
-#pragma region Player
-    CellState playerType;
-#pragma endregion
+
 
     int32_t id = -1;
 
-#pragma region  Receive
+#pragma region  ReceivePlayerType
     void* temp = std::malloc(kMaxPacketSize);
     if (nullptr != temp)
     {
@@ -41,7 +116,7 @@ int main()
     }
 #pragma endregion
 
-    std::cout << std::endl<< "id = " << id << std::endl;
+    std::cout << std::endl << "id = " << id << std::endl;
     switch (id)
     {
     case 0:
@@ -69,6 +144,10 @@ int main()
         }
 
         if (strlen(obuf) != 2) {
+            continue;
+        }
+
+        if (GB->isGameOver) {
             continue;
         }
 
@@ -115,11 +194,25 @@ int main()
         const char* buffer = stream.GetBufferPtr();
         uint32_t sz = stream.GetLength();
 
-        //clientSocket->Send(buffer, stream.GetLength());
+        clientSocket->Send(buffer, sz);
+
         std::cout << "Sended" << std::endl;
     }
 
     system("pause");
 
     SocketUtil::CleanUp();
+}
+
+int main()
+{
+    int i = 0;
+    std::cin >> i;
+    if (i == 1) {
+        makeClient();
+    }
+    else {
+        TickTackToeServer server;
+        server.DoTCPLoop();
+    }
 }

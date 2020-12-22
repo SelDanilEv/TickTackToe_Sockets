@@ -1,19 +1,57 @@
 #include "Shared.h"
 #include <cstdlib>
 
-TCPServer::TCPServer()
-{
-}
+GameBoard* mainGameBoard = new GameBoard();
 
-TCPServer::~TCPServer()
+DWORD WINAPI SendBoard()
 {
-}
-
-void TCPServer::DoTCPLoop()
-{
-    const int GOOD_SEGMENT_SIZE = 5000;
-
     SocketUtil::StaticInit();
+
+    SocketAddress* inAddress = new SocketAddress((uint16_t)2000);
+
+    UDPSocketPtr serverSocket = SocketUtil::CreateUDPSocketForAll(SocketAddressFamily::INET);
+
+    for (int i = 0; i < 1; i++)
+    {
+        OutputMemoryStream stream;
+        mainGameBoard->Write(stream);
+        const char* buffer = stream.GetBufferPtr();
+        uint32_t sz = stream.GetLength();
+
+        serverSocket->SendTo(buffer, stream.GetLength(), *inAddress);
+
+        std::cout << "Send ";
+        for (int i = 0; i < sz; i++) {
+            std::cout << (int)buffer[i];
+        }
+        std::cout << std::endl;
+    }
+    return 0;
+}
+
+TickTackToeServer::TickTackToeServer()
+{
+}
+
+TickTackToeServer::~TickTackToeServer()
+{
+}
+
+void startSendBoard() {
+#pragma region SendBoard
+    DWORD th1 = NULL;
+
+    HANDLE hTh1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)SendBoard, NULL, 0, &th1);
+
+    ResumeThread(hTh1);
+#pragma endregion
+}
+
+void TickTackToeServer::DoTCPLoop()
+{
+    SocketUtil::StaticInit();
+
+    const int GOOD_SEGMENT_SIZE = 5000;
 
     TCPSocketPtr listenSocket = SocketUtil::CreateTCPSocket(SocketAddressFamily::INET);
 
@@ -62,7 +100,7 @@ void TCPServer::DoTCPLoop()
 
 
 int32_t PlayerCounter = 0;
-void TCPServer::ProcessNewClient(TCPSocketPtr socket, SocketAddress address)
+void TickTackToeServer::ProcessNewClient(TCPSocketPtr socket, SocketAddress address)
 {
     OutputMemoryStream stream;
     stream.Write(PlayerCounter++);
@@ -71,27 +109,75 @@ void TCPServer::ProcessNewClient(TCPSocketPtr socket, SocketAddress address)
 
     socket->Send(buffer, stream.GetLength());
     std::cout << "New client" << std::endl;
+    startSendBoard();
 }
 
-void TCPServer::ProcessDataFromClient(TCPSocketPtr socket, char* data, int dataLen)
+int isGameFinished() {
+    if (mainGameBoard->cells[0][0]->state == mainGameBoard->cells[1][0]->state && mainGameBoard->cells[1][0]->state == mainGameBoard->cells[2][0]->state && mainGameBoard->cells[2][0]->state != EMPTY)
+        return 1;
+    else if (mainGameBoard->cells[0][1]->state == mainGameBoard->cells[1][1]->state && mainGameBoard->cells[1][1]->state == mainGameBoard->cells[2][1]->state && mainGameBoard->cells[2][1]->state != EMPTY)
+        return 1;
+    else if (mainGameBoard->cells[0][2]->state == mainGameBoard->cells[1][2]->state && mainGameBoard->cells[1][2]->state == mainGameBoard->cells[2][2]->state && mainGameBoard->cells[2][2]->state != EMPTY)
+        return 1;
+    else if (mainGameBoard->cells[0][0]->state == mainGameBoard->cells[0][1]->state && mainGameBoard->cells[0][1]->state == mainGameBoard->cells[0][2]->state && mainGameBoard->cells[0][2]->state != EMPTY)
+        return 1;
+    else if (mainGameBoard->cells[1][0]->state == mainGameBoard->cells[1][1]->state && mainGameBoard->cells[1][1]->state == mainGameBoard->cells[1][2]->state && mainGameBoard->cells[1][2]->state != EMPTY)
+        return 1;
+    else if (mainGameBoard->cells[2][0]->state == mainGameBoard->cells[2][1]->state && mainGameBoard->cells[2][1]->state == mainGameBoard->cells[2][2]->state && mainGameBoard->cells[2][2]->state != EMPTY)
+        return 1;
+    else if (mainGameBoard->cells[0][0]->state == mainGameBoard->cells[1][1]->state && mainGameBoard->cells[1][1]->state == mainGameBoard->cells[2][2]->state && mainGameBoard->cells[2][2]->state != EMPTY)
+        return 1;
+    else if (mainGameBoard->cells[2][0]->state == mainGameBoard->cells[1][1]->state && mainGameBoard->cells[1][1]->state == mainGameBoard->cells[0][2]->state && mainGameBoard->cells[2][0]->state != EMPTY)
+        return 1;
+
+    for (int i = 0; i < mainGameBoard->SIZE; i++) {
+        for (int j = 0; j < mainGameBoard->SIZE; j++) {
+            if (mainGameBoard->cells[i][j]->state == EMPTY) {
+                return 0;
+            }
+        }
+    }
+
+    return 2;
+}
+
+void TickTackToeServer::ProcessDataFromClient(TCPSocketPtr socket, char* data, int dataLen)
 {
     PlayerMove* pM = new PlayerMove();
-
-    //TestClass* test = new TestClass();
 
     InputMemoryStream inputMS(data, dataLen);
 
     pM->Read(inputMS);
-    ////ReceiveTestClass(socket, test);
 
-    ////string tmp = std::to_string((int)socket->mSocket);
-    ////char const* ptmp = tmp.c_str();
-    ////size_t newStrLen = dataLen + strlen(ptmp) + strlen(" - ") + 1;
+    if (mainGameBoard->turn != pM->playerType) {
+        return;
+    }
 
-    ////strcat_s(data, newStrLen, " - ");
-    ////strcat_s(data, newStrLen, ptmp);
+    if (mainGameBoard->cells[pM->col][pM->row]->state != EMPTY) {
+        return;
+    }
 
-    //std::cout << "Output: " << test->GetName() << std::endl;
+    mainGameBoard->cells[pM->col][pM->row]->state = pM->playerType;
 
-    ////socket->Send(data, strlen(data) + 1);
+    std::cout << pM->playerType << pM->col << pM->row << std::endl;
+
+
+    mainGameBoard->isGameOver = true;
+    switch (isGameFinished())
+    {
+    case 1:
+        mainGameBoard->message += "Winner ";
+        mainGameBoard->message += mainGameBoard->GetCharFromCell(mainGameBoard->turn);
+        break;
+    case 2:
+        mainGameBoard->message += "Draw";
+        break;
+    default:
+        mainGameBoard->isGameOver = false;
+        break;
+    }
+
+    mainGameBoard->ChangeTurn();
+
+    startSendBoard();
 }

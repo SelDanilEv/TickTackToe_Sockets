@@ -21,6 +21,7 @@ public:
 		vector< TCPSocketPtr >* outExceptSet);
 
 	static UDPSocketPtr	CreateUDPSocket(SocketAddressFamily inFamily);
+	static UDPSocketPtr	CreateUDPSocketForAll(SocketAddressFamily inFamily);
 	static TCPSocketPtr	CreateTCPSocket(SocketAddressFamily inFamily);
 
 private:

@@ -2,7 +2,5 @@
 //
 //int main()
 //{
-//    TCPServer server;
 //
-//    server.DoTCPLoop();
 //}

@@ -1,9 +1,9 @@
 #pragma once
-class TCPServer
+class TickTackToeServer
 {
 public:
-	TCPServer();
-	~TCPServer();
+	TickTackToeServer();
+	~TickTackToeServer();
 
 	void DoTCPLoop();
 private:
