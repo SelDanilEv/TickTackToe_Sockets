@@ -23,7 +23,6 @@ DWORD WINAPI TakeBoard()
     //serverSocket->SetNonBlockingMode(true);
 
     serverSocket->Bind(*inAddress);
-    std::cout << "Start";
 
     while (true)
     {
@@ -31,12 +30,9 @@ DWORD WINAPI TakeBoard()
         int dataReceived = serverSocket->ReceiveFrom(segment, 5000, *inAddress);
         if (dataReceived <= 0)
         {
-            //std::cout << "continue" << std::endl;
             Sleep(100);
             continue;
         }
-
-        std::cout << "after continue" << std::endl;
 
         InputMemoryStream inputMS(segment, dataReceived);
 
@@ -80,7 +76,11 @@ void makeClient() {
     ResumeThread(hTh1);
 #pragma endregion
 
-    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString("127.0.0.1:2000");  //set here server address
+    std::string addr;
+    std::cout << "Join to server : ";
+    std::cin >> addr;
+
+    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString(addr);  //set here server address
 
     SocketAddress* inAddress = new SocketAddress(servAddr->mSockAddr);
 

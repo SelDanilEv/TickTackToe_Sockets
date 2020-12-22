@@ -59,11 +59,9 @@ UDPSocketPtr SocketUtil::CreateUDPSocketForAll(SocketAddressFamily inFamily)
 {
     SOCKET s = socket(inFamily, SOCK_DGRAM, NULL);
 
-    /* stupid upd parameter */
     int optval = 1;
     if (setsockopt(s, SOL_SOCKET, SO_BROADCAST, (char*)&optval, sizeof(int)) == SOCKET_ERROR)
         std::cout << "Error upd for all";
-    /**/
 
 
     if (s != INVALID_SOCKET)

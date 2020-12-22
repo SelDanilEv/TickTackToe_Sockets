@@ -11,7 +11,7 @@ DWORD WINAPI SendBoard()
 
     UDPSocketPtr serverSocket = SocketUtil::CreateUDPSocketForAll(SocketAddressFamily::INET);
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 3; i++)
     {
         OutputMemoryStream stream;
         mainGameBoard->Write(stream);
@@ -25,6 +25,7 @@ DWORD WINAPI SendBoard()
             std::cout << (int)buffer[i];
         }
         std::cout << std::endl;
+        Sleep(10);
     }
     return 0;
 }
@@ -55,7 +56,11 @@ void TickTackToeServer::DoTCPLoop()
 
     TCPSocketPtr listenSocket = SocketUtil::CreateTCPSocket(SocketAddressFamily::INET);
 
-    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString("127.0.0.1:2000");
+    std::string addr;
+    std::cout << "Create a server : ";
+    std::cin >> addr;
+
+    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString(addr);  //set here server address
 
     SocketAddress* inAddress = new SocketAddress(servAddr->mSockAddr);
 
