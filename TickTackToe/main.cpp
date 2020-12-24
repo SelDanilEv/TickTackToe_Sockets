@@ -68,14 +68,6 @@ DWORD WINAPI TakeBoard()
 void makeClient() {
     SocketUtil::StaticInit();
 
-#pragma region TakeBoard
-    DWORD th1 = NULL;
-
-    HANDLE hTh1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)TakeBoard, NULL, 0, &th1);
-
-    ResumeThread(hTh1);
-#pragma endregion
-
     std::string addr;
     std::cout << "Join to server : ";
     std::cin >> addr;
@@ -87,8 +79,6 @@ void makeClient() {
     TCPSocketPtr clientSocket = SocketUtil::CreateTCPSocket(SocketAddressFamily::INET);
 
     clientSocket->Connect(*inAddress);
-
-
 
     int32_t id = -1;
 
@@ -130,6 +120,13 @@ void makeClient() {
         break;
     }
 
+#pragma region TakeBoard
+    DWORD th1 = NULL;
+
+    HANDLE hTh1 = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)TakeBoard, NULL, 0, &th1);
+
+    ResumeThread(hTh1);
+#pragma endregion
 
     PlayerMove pm(playerType);
 
