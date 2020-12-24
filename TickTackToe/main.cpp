@@ -207,6 +207,7 @@ void makeClient() {
 int main()
 {
     int i = 0;
+    std::cout << "Type '0' to create server, or '1' to create client\n";
     std::cin >> i;
     if (i == 1) {
         makeClient();
