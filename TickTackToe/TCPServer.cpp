@@ -96,11 +96,10 @@ void TickTackToeServer::DoTCPLoop()
                         ProcessDataFromClient(socket, segment,
                             dataReceived);
                     } 
-                    /*else
+                    else
                     {
-                        socket->~TCPSocket();
-                        *socket = NULL;
-                    }*/
+                        readBlockSockets.erase(std::remove(readBlockSockets.begin(), readBlockSockets.end(), socket));
+                    }
                 }
             }
         }
