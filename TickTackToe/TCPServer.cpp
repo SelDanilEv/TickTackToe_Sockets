@@ -7,7 +7,7 @@ DWORD WINAPI SendBoard()
 {
     SocketUtil::StaticInit();
 
-    SocketAddress* inAddress = new SocketAddress((uint16_t)2000);
+    SocketAddress* inAddress = new SocketAddress(2000, true);
 
     UDPSocketPtr serverSocket = SocketUtil::CreateUDPSocketForAll(SocketAddressFamily::INET);
 
@@ -89,14 +89,18 @@ void TickTackToeServer::DoTCPLoop()
                 }
                 else
                 {
-                    // это обычный сокет — обработать данные...
                     char segment[GOOD_SEGMENT_SIZE];
                     int dataReceived = socket->Receive(segment, GOOD_SEGMENT_SIZE);
                     if (dataReceived > 0)
                     {
                         ProcessDataFromClient(socket, segment,
                             dataReceived);
-                    }
+                    } 
+                    /*else
+                    {
+                        socket->~TCPSocket();
+                        *socket = NULL;
+                    }*/
                 }
             }
         }

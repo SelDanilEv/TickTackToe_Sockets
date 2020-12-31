@@ -7,7 +7,7 @@ bool SocketUtil::StaticInit()
     int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (iResult != NO_ERROR)
     {
-        //ReportError("Starting Up");
+        ReportError("Starting Up");
         return false;
     }
 #endif
@@ -21,29 +21,16 @@ void SocketUtil::CleanUp()
 #endif
 }
 
+void SocketUtil::ReportError(const char* inOperationDesc)
+{
+#if _WIN32
+    DWORD errorNum = GetLastError();
 
-//void SocketUtil::ReportError(const char* inOperationDesc)
-//{
-//#if _WIN32
-//	LPVOID lpMsgBuf;
-//	DWORD errorNum = GetLastError();
-//
-//	FormatMessage(
-//		FORMAT_MESSAGE_ALLOCATE_BUFFER |
-//		FORMAT_MESSAGE_FROM_SYSTEM |
-//		FORMAT_MESSAGE_IGNORE_INSERTS,
-//		NULL,
-//		errorNum,
-//		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-//		(LPTSTR)&lpMsgBuf,
-//		0, NULL);
-//
-//	// TODO: Danil - there is StringUtils require
-//	//LOG("Error %s: %d- %s", inOperationDesc, errorNum, lpMsgBuf);
-//#else
-//	LOG("Error: %hs", inOperationDesc);
-//#endif
-//}
+    std::cout << "Error | " << inOperationDesc << ": " << errorNum << std::endl;
+#else
+    std::cout << "Error | " << inOperationDesc;
+#endif
+}
 
 int SocketUtil::GetLastError()
 {
@@ -61,7 +48,7 @@ UDPSocketPtr SocketUtil::CreateUDPSocketForAll(SocketAddressFamily inFamily)
 
     int optval = 1;
     if (setsockopt(s, SOL_SOCKET, SO_BROADCAST, (char*)&optval, sizeof(int)) == SOCKET_ERROR)
-        std::cout << "Error upd for all";
+        ReportError("SocketUtil::CreateUDPSocketForAll: Options setup failed");
 
 
     if (s != INVALID_SOCKET)
@@ -70,7 +57,7 @@ UDPSocketPtr SocketUtil::CreateUDPSocketForAll(SocketAddressFamily inFamily)
     }
     else
     {
-        //ReportError("SocketUtil::CreateUDPSocket");
+        ReportError("SocketUtil::CreateUDPSocketForAll");
         return nullptr;
     }
 }
@@ -89,7 +76,7 @@ UDPSocketPtr SocketUtil::CreateUDPSocket(SocketAddressFamily inFamily)
     }
     else
     {
-        //ReportError("SocketUtil::CreateUDPSocket");
+        ReportError("SocketUtil::CreateUDPSocket");
         return nullptr;
     }
 }
@@ -104,7 +91,7 @@ TCPSocketPtr SocketUtil::CreateTCPSocket(SocketAddressFamily inFamily)
     }
     else
     {
-        //ReportError("SocketUtil::CreateTCPSocket");
+        ReportError("SocketUtil::CreateTCPSocket");
         return nullptr;
     }
 }
@@ -152,7 +139,6 @@ int SocketUtil::Select(const vector< TCPSocketPtr >* inReadSet,
     const vector< TCPSocketPtr >* inExceptSet,
     vector< TCPSocketPtr >* outExceptSet)
 {
-    //build up some sets from our vectors
     fd_set read, write, except;
 
     int nfds = 0;

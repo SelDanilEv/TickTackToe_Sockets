@@ -11,16 +11,7 @@ DWORD WINAPI TakeBoard()
 {
     UDPSocketPtr serverSocket = SocketUtil::CreateUDPSocket(SocketAddressFamily::INET);
 
-    //SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString("127.0.0.1:2000");
-
-    SocketAddress* inAddress = new SocketAddress((int)2000);
-
-    //while (serverSocket->Bind(*inAddress) != 0) {
-    //    std::cout << "Try bind";
-    //    Sleep(100);
-    //}
-
-    //serverSocket->SetNonBlockingMode(true);
+    SocketAddress* inAddress = new SocketAddress(2000);
 
     serverSocket->Bind(*inAddress);
 
@@ -72,7 +63,7 @@ void makeClient() {
     std::cout << "Join to server : ";
     std::cin >> addr;
 
-    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString(addr);  //set here server address
+    SocketAddressPtr servAddr = IPAddressFactory::CreateIPv4FromString(addr);  //set server address
 
     SocketAddress* inAddress = new SocketAddress(servAddr->mSockAddr);
 
@@ -203,6 +194,7 @@ void makeClient() {
 
 int main()
 {
+    setlocale(0, "");
     int i = 0;
     std::cout << "Type '0' to create server, or '1' to create client\n";
     std::cin >> i;

@@ -156,25 +156,22 @@
     <ClInclude Include="SocketUtil.h" />
     <ClInclude Include="TCPServer.h" />
     <ClInclude Include="TCPSocket.h" />
-    <ClInclude Include="TestClass.h" />
     <ClInclude Include="UDPSocket.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CellModel.cpp" />
+    <ClCompile Include="Client.cpp" />
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="InputMemoryBitStream.cpp" />
     <ClCompile Include="InputMemoryStream.cpp" />
     <ClCompile Include="IPAddressFactory.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="main_tcp_server.cpp" />
     <ClCompile Include="OutputMemoryBitStream.cpp" />
     <ClCompile Include="OutputMemoryStream.cpp" />
     <ClCompile Include="PlayerMove.cpp" />
-    <ClCompile Include="SocketAddress.cpp" />
     <ClCompile Include="SocketUtil.cpp" />
     <ClCompile Include="TCPServer.cpp" />
     <ClCompile Include="TCPSocket.cpp" />
-    <ClCompile Include="TestClass.cpp" />
     <ClCompile Include="UDPSocket.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

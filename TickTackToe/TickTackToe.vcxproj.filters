@@ -72,9 +72,6 @@
     <ClInclude Include="OutputMemoryStream.h">
       <Filter>Header Files\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="TestClass.h">
-      <Filter>Header Files\Serialization</Filter>
-    </ClInclude>
     <ClInclude Include="ByteSwap.h">
       <Filter>Header Files\Serialization</Filter>
     </ClInclude>
@@ -104,9 +101,6 @@
     <ClCompile Include="SocketUtil.cpp">
       <Filter>Source Files\Sockets</Filter>
     </ClCompile>
-    <ClCompile Include="SocketAddress.cpp">
-      <Filter>Source Files\Sockets</Filter>
-    </ClCompile>
     <ClCompile Include="IPAddressFactory.cpp">
       <Filter>Source Files\Sockets</Filter>
     </ClCompile>
@@ -122,13 +116,7 @@
     <ClCompile Include="OutputMemoryStream.cpp">
       <Filter>Source Files\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="TestClass.cpp">
-      <Filter>Source Files\Serialization</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main_tcp_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CellModel.cpp">
@@ -139,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="PlayerMove.cpp">
       <Filter>Source Files\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="Client.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
