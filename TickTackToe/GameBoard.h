@@ -1,5 +1,5 @@
 #pragma once
-class GameBoard
+class GameBoard  // сущность доски
 {
 public:
     const static unsigned int SIZE = 3;

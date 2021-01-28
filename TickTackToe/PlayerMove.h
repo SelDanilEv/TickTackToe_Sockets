@@ -1,5 +1,5 @@
 #pragma once
-class PlayerMove
+class PlayerMove // сущность хода который делает игрок
 {
 public:
     PlayerMove() : playerType(EMPTY)

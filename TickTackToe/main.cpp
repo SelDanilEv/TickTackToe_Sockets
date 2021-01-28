@@ -1,12 +1,12 @@
 #include "Shared.h"
 
-
+// глобальные обьекты
 #pragma region Player
 CellState playerType;
 #pragma endregion
 GameBoard* GB = new GameBoard();
 
-
+// отдельный поток для получения доски и всей информации
 DWORD WINAPI TakeBoard()
 {
     UDPSocketPtr serverSocket = SocketUtil::CreateUDPSocket(SocketAddressFamily::INET);
@@ -17,7 +17,7 @@ DWORD WINAPI TakeBoard()
 
     while (true)
     {
-        char segment[5000];
+        char segment[5000];  // при получении сообщения выполнять его обработку
         int dataReceived = serverSocket->ReceiveFrom(segment, 5000, *inAddress);
         if (dataReceived <= 0)
         {
@@ -74,6 +74,7 @@ void makeClient() {
     int32_t id = -1;
 
 #pragma region  ReceivePlayerType
+    // изначально клиент получает роль от сервера в зависимости какой по очереди он подключился : 1-крестик 2-нолик 3 и далее- наблюдатель
     void* temp = std::malloc(kMaxPacketSize);
     if (nullptr != temp)
     {
@@ -111,6 +112,7 @@ void makeClient() {
         break;
     }
 
+    // запуск потока для прослушивания широковещательных сообщений с сервера
 #pragma region TakeBoard
     DWORD th1 = NULL;
 
@@ -126,7 +128,7 @@ void makeClient() {
 
         std::cin >> obuf;
 
-
+        // валидация хода, проверка на коректные введенные данные
         if (playerType == EMPTY) {
             continue;
         }
@@ -192,6 +194,7 @@ void makeClient() {
     SocketUtil::CleanUp();
 }
 
+// роль приложения зависит от ввода пользователя
 int main()
 {
     setlocale(0, "");

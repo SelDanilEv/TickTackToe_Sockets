@@ -3,7 +3,7 @@
 
 GameBoard* mainGameBoard = new GameBoard();
 
-DWORD WINAPI SendBoard()
+DWORD WINAPI SendBoard()   // отправка доски игрокам и наблюдателям
 {
     SocketUtil::StaticInit();
 
@@ -38,7 +38,7 @@ TickTackToeServer::~TickTackToeServer()
 {
 }
 
-void startSendBoard() {
+void startSendBoard() {   // поток для отправки доски
 #pragma region SendBoard
     DWORD th1 = NULL;
 
@@ -120,7 +120,7 @@ void TickTackToeServer::ProcessNewClient(TCPSocketPtr socket, SocketAddress addr
     startSendBoard();
 }
 
-int isGameFinished() {
+int isGameFinished() {  // проверка на выигрыш одним из игроков
     if (mainGameBoard->cells[0][0]->state == mainGameBoard->cells[1][0]->state && mainGameBoard->cells[1][0]->state == mainGameBoard->cells[2][0]->state && mainGameBoard->cells[2][0]->state != EMPTY)
         return 1;
     else if (mainGameBoard->cells[0][1]->state == mainGameBoard->cells[1][1]->state && mainGameBoard->cells[1][1]->state == mainGameBoard->cells[2][1]->state && mainGameBoard->cells[2][1]->state != EMPTY)
@@ -149,6 +149,7 @@ int isGameFinished() {
     return 2;
 }
 
+// обработка данных которые поступили на сервер от игроков
 void TickTackToeServer::ProcessDataFromClient(TCPSocketPtr socket, char* data, int dataLen)
 {
     PlayerMove* pM = new PlayerMove();

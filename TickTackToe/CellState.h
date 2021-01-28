@@ -1,6 +1,6 @@
 #pragma once
 
-enum CellState
+enum CellState  // тип клиента
 {
     EMPTY = -1,
     ZERO = 1,
