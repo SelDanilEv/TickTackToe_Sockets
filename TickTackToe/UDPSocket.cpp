@@ -6,7 +6,7 @@ int UDPSocket::Bind(const SocketAddress& inBindAddress)
 	int error = bind(mSocket, &inBindAddress.mSockAddr, inBindAddress.GetSize());
 	if (error != 0)
 	{
-		//SocketUtil::ReportError("UDPSocket::Bind");
+		SocketUtil::ReportError("UDPSocket::Bind");
 		return SocketUtil::GetLastError();
 	}
 
@@ -21,8 +21,7 @@ int UDPSocket::SendTo(const void* inToSend, int inLength, const SocketAddress& i
 		0, &inToAddress.mSockAddr, inToAddress.GetSize());
 	if (byteSentCount <= 0)
 	{
-		//we'll return error as negative number to indicate less than requested amount of bytes sent...
-		//SocketUtil::ReportError("UDPSocket::SendTo");
+		SocketUtil::ReportError("UDPSocket::SendTo");
 		return -SocketUtil::GetLastError();
 	}
 	else
@@ -57,7 +56,7 @@ int UDPSocket::ReceiveFrom(void* inToReceive, int inMaxLength, SocketAddress& ou
 		}
 		else
 		{
-			//SocketUtil::ReportError("UDPSocket::ReceiveFrom");
+			SocketUtil::ReportError("UDPSocket::ReceiveFrom");
 			return -error;
 		}
 	}
@@ -86,7 +85,7 @@ int UDPSocket::SetNonBlockingMode(bool inShouldBeNonBlocking)
 
 	if (result == SOCKET_ERROR)
 	{
-		//SocketUtil::ReportError("UDPSocket::SetNonBlockingMode");
+		SocketUtil::ReportError("UDPSocket::SetNonBlockingMode");
 		return SocketUtil::GetLastError();
 	}
 	else

@@ -89,7 +89,6 @@ using std::unordered_map;
 #include "InputMemoryStream.h"
 #include "OutputMemoryBitStream.h"
 #include "InputMemoryBitStream.h"
-#include "TestClass.h"
 
 #include "CellState.h"
 #include "CellModel.h"

@@ -10,7 +10,7 @@ public:
 	static bool			StaticInit();
 	static void			CleanUp();
 
-	//static void			ReportError(const char* inOperationDesc);
+	static void			ReportError(const char* inOperationDesc);
 	static int			GetLastError();
 
 	static int			Select(const vector< TCPSocketPtr >* inReadSet,

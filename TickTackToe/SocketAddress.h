@@ -8,20 +8,12 @@ public:
         GetAsSockAddrIn()->sin_port = htons(inPort);
     }
 
-    SocketAddress(uint16_t inPort)//if only port it is broadcast
+    SocketAddress(uint16_t inPort, bool isBroadCast = false)
     {
         GetAsSockAddrIn()->sin_family = AF_INET;
-        GetAsSockAddrIn()->sin_addr.S_un.S_addr = INADDR_BROADCAST;
+        GetAsSockAddrIn()->sin_addr.S_un.S_addr = isBroadCast ? INADDR_BROADCAST : INADDR_ANY;
         GetAsSockAddrIn()->sin_port = htons(inPort);
     }
-
-    SocketAddress(int inPort)//if only port it is broadcast
-    {
-        GetAsSockAddrIn()->sin_family = AF_INET;
-        GetAsSockAddrIn()->sin_addr.S_un.S_addr = INADDR_ANY;
-        GetAsSockAddrIn()->sin_port = htons(inPort);
-    }
-
 
     SocketAddress(const sockaddr& inSockAddr)
     {
